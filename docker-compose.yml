@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  expresspinologger:
+    image: expresspinologger
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: $NODE_ENV
+      DATADOG_HOST: demo_dd_agent
+    env_file:
+        - .env
+    ports:
+      - 3000:3000
+
+  demo_dd_agent:
+    image: datadog/agent:latest
+    ports:
+      - 8125:8125/udp
+      - 8126:8126/tcp
+    links:
+      - expresspinologger
+    environment:
+      DD_API_KEY: $DD_API_KEY
+      DD_SITE: $DD_SITE
+      DD_ENV: $DD_ENV
+      DD_TAGS: $NODE_REGION
+      DD_LOGS_INJECTION: "true"
+      DD_TRACE_ENABLED: "true"
+      DD_APM_ENABLED: "true"
+      DD_LOGS_ENABLED: "true"
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
+      DD_LOGS_CONFIG_DOCKER_CONTAINER_USE_FILE: "true"
+      DD_CONTAINER_EXCLUDE: "name:datadog-agent"    
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock:ro 
+     - /var/lib/docker/containers:/var/lib/docker/containers:ro 
+     - /proc/:/host/proc/:ro 
+     - /opt/datadog-agent/run:/opt/datadog-agent/run:rw 
+     - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro 
+    logging:
+      driver: none
