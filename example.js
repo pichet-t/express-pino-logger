@@ -1,10 +1,6 @@
 'use strict'
 
-const tracer = require('dd-trace').init({
-  logInjection: true,
-  hostname: 'docker-desktop',
-  port: 8126
-});
+const tracer = require('dd-trace').init()
 
 var app = require('express')()
 var pino = require('express-pino-logger')()

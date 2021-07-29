@@ -9,6 +9,9 @@ services:
     environment:
       NODE_ENV: $NODE_ENV
       DATADOG_HOST: demo_dd_agent
+      DD_AGENT_HOST: "docker-desktop"
+      DD_TRACE_AGENT_PORT: 8126
+      DD_LOGS_INJECTION: "true"
     env_file:
         - .env
     ports:
